@@ -1,0 +1,193 @@
+#Patryk Stefanski - Q1 Probability Assignment
+#ID
+forename = "Patryk"
+surname = "Stefanski"
+studentID = 20089013
+studentProgramme = "Applied Computing"
+
+#Q1- Pr(no of crimes x , x >= 5 )
+q1 = function(replications = 100000)
+{
+  results = c()
+  
+  #(a) Calculated Pr(no crimes in 24hrs  >=5)
+  #  mtbc = 368 , crime = 5 , eventrate=1440/368 = 3.913 , pr = (1 - Pr(x<=4)
+  pCalc = ppois(4, 3.913, lower = FALSE)
+  
+  #(b) Simulation
+  for (runs in 1:20)
+  {
+    crimeSim = rpois(replications, 3.913)
+    
+    prMoreThanFiveCrimes = length(crimeSim [crimeSim >= 5]) / replications
+    
+    results = c(results, prMoreThanFiveCrimes)
+  }
+  
+  #(c) results with standard deviation
+  pSimAvg = mean(results)
+  pSimSD = sd(results)
+  c(pCalc, pSimAvg, pSimSD)
+  
+  #pnorm( pSimAvg,pCalc,pSimSD,lower=FALSE)
+  
+}
+
+q1()
+
+#Q2 - Pr(2422 < x < 2843)
+q2 = function(replications = 200000)
+{
+  results = c()
+  
+  #(a) Calculated Pr(units produced x ,2422 < x < 2843)
+  # avg = 2740 , standard deviation = 178 , pr= Pr(x<2834)-Pr(x>2422)
+  pCalc = pnorm(2843, 2740, 178) - pnorm(2422, 2740, 178)
+  
+  #(b) Simulation
+  for (runs in 1:20) {
+    techSim = rnorm(replications, 2740, 178)
+    prInbetweenRange = length(techSim[techSim > 2422 & techSim < 2834]) / replications
+    results = c(results , prInbetweenRange)
+  }
+  
+  #(c) results with standard deviation
+  pSimAvg = mean(results)
+  pSimSD = sd(results)
+  
+  c(pCalc, pSimAvg, pSimSD)
+  
+  #pnorm( pSimAvg,pCalc,pSimSD,lower=FALSE)
+  
+  
+}
+
+q2()
+
+#Q3 - Pr(x=2)
+q3 = function(replications = 40000)
+{
+  #(a) Calculated Pr(no of techs(X) on committee =2 ,x=2)
+  # commsize=9 , tech=10 , acad=11 , post=8 , mintech =2
+  pCalc = (choose(10, 2) * choose(19, 7)) / choose(29, 9)
+  
+  
+  #(b) Simulation
+  results = c()
+  
+  
+  for (run in 1:20)
+  {
+    twoTechCount = 0
+    
+    for (rep in 1:replications) {
+      choose9 = sample(
+        c(
+          "TECH","TECH","TECH","TECH","TECH","TECH","TECH","TECH","TECH","TECH",
+          "ACAD","ACAD","ACAD","ACAD","ACAD","ACAD","ACAD","ACAD","ACAD","ACAD","ACAD",
+          "POST","POST","POST","POST","POST","POST","POST","POST"),9,replace = FALSE )
+    
+      if (length(choose9[choose9 == "TECH"]) == 2) {
+        twoTechCount = twoTechCount + 1
+      }
+    }
+    
+    prTwoTechs = twoTechCount / replications
+    results = c(results , prTwoTechs)
+    
+  }
+  
+
+  #(c) results with standard deviation
+  
+  pSimAvg = mean(results)
+  pSimSD = sd(results)
+  c(pCalc, pSimAvg, pSimSD)
+  
+}
+
+q3()
+
+#Q4 - Pr()
+q4 = function(replications = 20000)
+{
+  #(a) Calculated Pr()
+  #drawn = 3 , total = 7
+  pCalc = 7 / 343
+  
+  #(b) Simulated
+  results = c()
+  
+  for (run in 1:20)
+    
+  {
+    notUniqueCount = 0
+    
+    
+    for (rep in 1:replications)
+      
+    {
+      choose1 = sample(c(1, 2, 3, 4, 5, 6, 7), 1, replace = TRUE)
+      choose2 = sample(c(1, 2, 3, 4, 5, 6, 7), 1, replace = TRUE)
+      choose3 = sample(c(1, 2, 3, 4, 5, 6, 7), 1, replace = TRUE)
+      if (choose1 == choose2 & choose1 == choose3)
+        notUniqueCount = notUniqueCount + 1
+    }
+    
+    pSim = notUniqueCount / replications
+    results = c(results, pSim)
+    
+  }
+  #(c) results with standard deviation
+  pSimAvg = mean(results)
+  pSimSD = sd(results)
+  c(pCalc, pSimAvg, pSimSD)
+  
+  #pnorm( pSimAvg,pCalc,pSimSD,lower=FALSE)
+  
+}
+
+q4()
+
+#Q5 - Pr()
+q5 = function(replications = 20000)
+{
+  #(a) Calculated Pr()
+  #members=78 , winners = 3 ,pWinner = 1/210
+  pCalc = 1 - pbinom(2, 78, 1 / 35)
+  
+  #(b) Simulated
+  results = c()
+  
+  for (run in 1:20)
+  {
+    winningNumbers = sample(c(1, 2, 3, 4, 5, 6, 7), 3, replace = FALSE)
+    winners = 0
+    
+    
+    
+    for (rep in 1:replications)
+    {
+      choose3 = sample(c(1, 2, 3, 4, 5, 6, 7), 3, replace = FALSE)
+      if (setequal(winningNumbers, choose3))
+        winners = winners + 1
+      
+    }
+    
+    pSim = winners / replications
+    pSim2 = 1 - pbinom(2, 78, pSim)
+    results = c(results, pSim2)
+    
+  }
+  
+  pSimAvg = mean(results)
+  pSimSD = sd(results)
+  c(pCalc, pSimAvg, pSimSD)
+  
+}
+
+q5()
+
+
+
+
